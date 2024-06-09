@@ -1,29 +1,40 @@
-import 'package:DelightFoods/Product/Product_api_handler.dart';
-import 'package:DelightFoods/Product/ProductModel.dart';
 import 'package:flutter/material.dart';
+import 'Order_api_handler.dart';
+import 'OrderModel.dart';
 
-class FindProduct extends StatefulWidget {
-  const FindProduct({super.key});
+class FindOrder extends StatefulWidget {
+  const FindOrder({super.key});
 
   @override
-  State<FindProduct> createState() => _FindProductState();
+  State<FindOrder> createState() => _FindOrderState();
 }
 
-class _FindProductState extends State<FindProduct> {
+class _FindOrderState extends State<FindOrder> {
   ApiHandler apiHandler = ApiHandler();
-  Product product = const Product.empty();
+  Order? order;
   TextEditingController textEditingController = TextEditingController();
+  String errorMessage = '';
 
-  void findProduct(int productId) async {
-    product = await apiHandler.getProductById(id: productId);
-    setState(() {});
+  void findOrder(int orderId) async {
+    try {
+      Order fetchedOrder = await apiHandler.getOrderById(id: orderId);
+      setState(() {
+        order = fetchedOrder;
+        errorMessage = '';
+      });
+    } catch (e) {
+      setState(() {
+        order = null;
+        errorMessage = 'Order not found or error occurred: $e';
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Find Product"),
+        title: const Text("Find Order"),
         centerTitle: true,
         backgroundColor: Colors.teal,
         foregroundColor: Colors.white,
@@ -33,7 +44,15 @@ class _FindProductState extends State<FindProduct> {
         textColor: Colors.white,
         padding: const EdgeInsets.all(20),
         onPressed: () {
-          findProduct(int.parse(textEditingController.text));
+          int orderId = int.tryParse(textEditingController.text) ?? -1;
+          if (orderId > 0) {
+            findOrder(orderId);
+          } else {
+            setState(() {
+              errorMessage = 'Please enter a valid order ID';
+              order = null;
+            });
+          }
         },
         child: const Text('Find'),
       ),
@@ -43,15 +62,26 @@ class _FindProductState extends State<FindProduct> {
           children: [
             TextField(
               controller: textEditingController,
+              decoration: const InputDecoration(
+                labelText: 'Enter Order ID',
+                border: OutlineInputBorder(),
+              ),
+              keyboardType: TextInputType.number,
             ),
             const SizedBox(
               height: 10,
             ),
-            ListTile(
-              leading: Text("${product.id}"),
-              title: Text(product.name),
-              subtitle: Text(product.price.toString()),
-            ),
+            if (errorMessage.isNotEmpty)
+              Text(
+                errorMessage,
+                style: const TextStyle(color: Colors.red),
+              ),
+            if (order != null)
+              ListTile(
+                leading: Text("${order!.id}"),
+                title: Text(order!.shippingAddress),
+                subtitle: Text(order!.totalPrice.toString()),
+              ),
           ],
         ),
       ),

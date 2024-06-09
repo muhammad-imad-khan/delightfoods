@@ -83,9 +83,9 @@ class MainPage extends StatelessWidget {
           ],
         ),
       ),
-      body: Center(
-        child: Text('Welcome to Delight Foods!'),
-      ),
+      body:  ListTile(
+              title: Text('Dashboard'),
+            ),
     );
   }
 }

@@ -1,58 +1,87 @@
-import 'package:DelightFoods/Product/Product_api_handler.dart';
-import 'package:DelightFoods/Product/ProductModel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:DelightFoods/Order/Order_api_handler.dart';
+import 'package:DelightFoods/Order/OrderModel.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:http/http.dart' as http;
 
-class EditPage extends StatefulWidget {
-  final Product product;
-  const EditPage({Key? key, required this.product}) : super(key: key);
+class EditOrder extends StatefulWidget {
+  final Order order;
+  const EditOrder({Key? key, required this.order}) : super(key: key);
 
   @override
-  State<EditPage> createState() => _EditPageState();
+  State<EditOrder> createState() => _EditOrderState();
 }
 
-class _EditPageState extends State<EditPage> {
+class _EditOrderState extends State<EditOrder> {
   final _formKey = GlobalKey<FormBuilderState>();
   ApiHandler apiHandler = ApiHandler();
   late http.Response response;
 
   void updateData() async {
-    if (_formKey.currentState!.saveAndValidate()) {
-      final data = _formKey.currentState!.value;
+    try {
+      if (_formKey.currentState!.saveAndValidate()) {
+        final data = _formKey.currentState!.value;
 
-      final product = Product(
-        id: widget.product.id,
-        name: data['name'],
-        description: data['description'] ?? '',
-        price: double.tryParse(data['price'] ?? '0') ?? 0,
-        categoryId: int.tryParse(data['categoryId'] ?? '0') ?? 0,
-        clientId: int.tryParse(data['clientId'] ?? '0') ?? 0,
-        stock: 0,
-        isActive: true,
-        categoryList: [],
-        parentcategoryList: [],
-        uploadedFiles: [],
-        mediaFileList: [],
-        mediaFilePath: '',
-      );
+        final updatedOrder = Order(
+          id: widget.order.id,
+          productId: data['productId'],
+          customerId: data['customerId'],
+          customerName: data['customerName'],
+          quantity: data['quantity'],
+          totalPrice: data['totalPrice'],
+          advancePayment: data['advancePayment'],
+          remainingPayment: data['remainingPayment'],
+          status: data['status'],
+          reason: data['reason'],
+          returnDate: data['returnDate'],
+          shippingId: data['shippingId'],
+          createdOnUTC: data['createdOnUTC'],
+          createdStringDate: data['createdStringDate'],
+          productName: data['productName'],
+          paymentType: data['paymentType'],
+          shippingAddress: data['shippingAddress'],
+          paymentId: data['paymentId'],
+          cashOnDelivery: data['cashOnDelivery'],
+          cartDTOs: data['cartDTOs'],
+          saleOrderProductMappings: data['saleOrderProductMappings'],
+          taxRate: data['taxRate'],
+          withholdingTax: data['withholdingTax'],
+          cardholderName: data['cardholderName'],
+          cardNumber: data['cardNumber'],
+          expiry: data['expiry'],
+          cvc: data['cvc'],
+          isReturnDateValid: data['isReturnDateValid'],
+        );
 
-      response = await apiHandler.updateProduct(
-        id: widget.product.id,
-        product: product,
+        response = await apiHandler.updateOrder(id: widget.order.id, order: updatedOrder);
+
+        if (response.statusCode == 200) {
+          Navigator.pop(context, true); // Pass true to indicate success
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Failed to update order. Status code: ${response.statusCode}'),
+              duration: const Duration(seconds: 3),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error updating order: $e'),
+          duration: const Duration(seconds: 3),
+        ),
       );
     }
-
-    if (!mounted) return;
-    Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Edit Product"),
+        title: const Text("Edit Order"),
         centerTitle: true,
         backgroundColor: Colors.green,
         foregroundColor: Colors.white,
@@ -69,37 +98,39 @@ class _EditPageState extends State<EditPage> {
         child: FormBuilder(
           key: _formKey,
           initialValue: {
-            'name': widget.product.name,
-            'description': widget.product.description,
-            'price': widget.product.price.toString(),
-            'categoryId': widget.product.categoryId.toString(),
-            'clientId': widget.product.clientId.toString(),
+            'productId': widget.order.productId,
+            'customerId': widget.order.customerId,
+            'customerName': widget.order.customerName,
+            'quantity': widget.order.quantity,
+            'totalPrice': widget.order.totalPrice,
+            'advancePayment': widget.order.advancePayment,
+            'remainingPayment': widget.order.remainingPayment,
+            'status': widget.order.status,
+            'reason': widget.order.reason,
+            'returnDate': widget.order.returnDate,
+            'shippingId': widget.order.shippingId,
+            'createdOnUTC': widget.order.createdOnUTC,
+            'createdStringDate': widget.order.createdStringDate,
+            'productName': widget.order.productName,
+            'paymentType': widget.order.paymentType,
+            'shippingAddress': widget.order.shippingAddress,
+            'paymentId': widget.order.paymentId,
+            'cashOnDelivery': widget.order.cashOnDelivery,
+            'cartDTOs': widget.order.cartDTOs,
+            'saleOrderProductMappings': widget.order.saleOrderProductMappings,
+            'taxRate': widget.order.taxRate,
+            'withholdingTax': widget.order.withholdingTax,
+            'cardholderName': widget.order.cardholderName,
+            'cardNumber': widget.order.cardNumber,
+            'expiry': widget.order.expiry,
+            'cvc': widget.order.cvc,
+            'isReturnDateValid': widget.order.isReturnDateValid,
           },
           child: Column(
             children: [
               FormBuilderTextField(
-                name: 'name',
-                decoration: const InputDecoration(labelText: 'Name'),
-                validator: FormBuilderValidators.compose([
-                  FormBuilderValidators.required(),
-                ]),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              FormBuilderTextField(
-                name: 'description',
-                decoration: const InputDecoration(labelText: 'Description'),
-                validator: FormBuilderValidators.compose([
-                  FormBuilderValidators.required(),
-                ]),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              FormBuilderTextField(
-                name: 'price',
-                decoration: const InputDecoration(labelText: 'Price'),
+                name: 'productId',
+                decoration: const InputDecoration(labelText: 'Product ID'),
                 keyboardType: TextInputType.number,
                 validator: FormBuilderValidators.compose([
                   FormBuilderValidators.required(),
@@ -109,27 +140,17 @@ class _EditPageState extends State<EditPage> {
               const SizedBox(
                 height: 10,
               ),
-              FormBuilderTextField(
-                name: 'categoryId',
-                decoration: const InputDecoration(labelText: 'Category ID'),
-                keyboardType: TextInputType.number,
-                validator: FormBuilderValidators.compose([
-                  FormBuilderValidators.required(),
-                  FormBuilderValidators.numeric(),
-                ]),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              FormBuilderTextField(
-                name: 'clientId',
-                decoration: const InputDecoration(labelText: 'Client ID'),
-                keyboardType: TextInputType.number,
-                validator: FormBuilderValidators.compose([
-                  FormBuilderValidators.required(),
-                  FormBuilderValidators.numeric(),
-                ]),
-              ),
+              // Add more form fields for other properties as needed
+              // Example:
+              // FormBuilderTextField(
+              //   name: 'customerId',
+              //   decoration: const InputDecoration(labelText: 'Customer ID'),
+              //   keyboardType: TextInputType.number,
+              //   validator: FormBuilderValidators.compose([
+              //     FormBuilderValidators.required(),
+              //     FormBuilderValidators.numeric(),
+              //   ]),
+              // ),
             ],
           ),
         ),

@@ -3,17 +3,17 @@ import 'package:DelightFoods/Order/OrderModel.dart';
 import 'package:http/http.dart' as http;
 
 class ApiHandler {
-  final String baseUri = "http://192.168.1.13:8081/api/Order";
+  final String baseUri = "http://192.168.1.13:8081/api/SaleOrder";
 
   Future<List<Order>> getOrderData() async {
     List<Order> data = [];
 
-    final uri = Uri.parse(baseUri);
+    final uri = Uri.parse("$baseUri/OrderListForAdmin");
     try {
       final response = await http.get(
         uri,
         headers: <String, String>{
-          'Content-type': 'application/json; charset=UTF-8',
+          'Content-Type': 'application/json; charset=UTF-8',
         },
       );
 
@@ -39,7 +39,7 @@ class ApiHandler {
       response = await http.put(
         uri,
         headers: <String, String>{
-          'Content-type': 'application/json; charset=UTF-8',
+          'Content-Type': 'application/json; charset=UTF-8',
         },
         body: json.encode(order.toJson()),
       );
@@ -57,7 +57,7 @@ class ApiHandler {
       final response = await http.post(
         uri,
         headers: <String, String>{
-          'Content-type': 'application/json; charset=UTF-8',
+          'Content-Type': 'application/json; charset=UTF-8',
         },
         body: json.encode(order.toJson()),
       );
@@ -76,7 +76,7 @@ class ApiHandler {
       response = await http.delete(
         uri,
         headers: <String, String>{
-          'Content-type': 'application/json; charset=UTF-8',
+          'Content-Type': 'application/json; charset=UTF-8',
         },
       );
     } catch (e) {
@@ -94,7 +94,7 @@ class ApiHandler {
       final response = await http.get(
         uri,
         headers: <String, String>{
-          'Content-type': 'application/json; charset=UTF-8',
+          'Content-Type': 'application/json; charset=UTF-8',
         },
       );
 

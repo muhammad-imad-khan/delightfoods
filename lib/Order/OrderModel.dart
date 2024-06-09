@@ -4,9 +4,9 @@ class Order {
   final int customerId;
   final String? customerName;
   final int quantity;
-  final double totalPrice;
-  final double advancePayment;
-  final double remainingPayment;
+  final int totalPrice;
+  final int advancePayment;
+  final int remainingPayment;
   final String status;
   final String? reason;
   final DateTime? returnDate;

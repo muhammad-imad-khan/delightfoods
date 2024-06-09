@@ -41,6 +41,8 @@ class _ProductPageState extends State<ProductPage> {
     super.initState();
   }
 
+  bool isGrid = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,8 +93,7 @@ class _ProductPageState extends State<ProductPage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const AddProduct(),
-                ),
+                  builder: (context) => const AddProduct()),
               );
             },
             child: const Icon(Icons.add),
@@ -101,33 +102,177 @@ class _ProductPageState extends State<ProductPage> {
       ),
       body: Column(
         children: [
-          ListView.builder(
-            shrinkWrap: true,
-            itemCount: data.length,
-            itemBuilder: (BuildContext context, int index) {
-              return ListTile(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => EditPage(product: data[index]),
-                    ),
-                  );
-                },
-                leading: Text("${data[index].id}"),
-                title: Text(data[index].name),
-                subtitle: Text(data[index].description),
-                trailing: IconButton(
-                  icon: const Icon(Icons.delete_outline),
-                  onPressed: () {
-                    deleteProduct(data[index].id);
-                  },
-                ),
-              );
-            },
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ToggleButtons(
+              isSelected: [isGrid, !isGrid],
+              onPressed: (index) {
+                setState(() {
+                  isGrid = index == 0;
+                });
+              },
+              children: [
+                Icon(Icons.grid_view),
+                Icon(Icons.list),
+              ],
+            ),
+          ),
+          Expanded(
+            child: isGrid ? buildGridView() : buildListView(),
           ),
         ],
       ),
+    );
+  }
+
+  Widget buildGridView() {
+    return GridView.builder(
+      padding: const EdgeInsets.all(8.0),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
+        childAspectRatio: 0.7,
+      ),
+      itemCount: data.length,
+      itemBuilder: (BuildContext context, int index) {
+        return Card(
+          elevation: 3,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
+                  child: Image.network(
+                    data[index].mediaFilePath ?? 'https://via.placeholder.com/150', // Provide a placeholder URL
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return const Icon(Icons.error);
+                    },
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      data[index].name,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      data[index].description,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      '\$${data[index].price.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.green,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              ButtonBar(
+                alignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.edit, color: Colors.blue),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EditPage(product: data[index]),
+                        ),
+                      );
+                    },
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.delete, color: Colors.red),
+                    onPressed: () {
+                      deleteProduct(data[index].id);
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget buildListView() {
+    return ListView.builder(
+      padding: const EdgeInsets.all(8.0),
+      itemCount: data.length,
+      itemBuilder: (BuildContext context, int index) {
+        return Card(
+          elevation: 3,
+          margin: const EdgeInsets.all(8.0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: ListTile(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EditPage(product: data[index]),
+                ),
+              );
+            },
+            leading: CircleAvatar(
+              backgroundImage: NetworkImage(data[index].mediaFilePath ?? 'https://via.placeholder.com/150'),
+              onBackgroundImageError: (_, __) => const Icon(Icons.error),
+            ),
+            title: Text(
+              data[index].name,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(data[index].description),
+                const SizedBox(height: 4),
+                Text(
+                  '\$${data[index].price.toStringAsFixed(2)}',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.green,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+            trailing: IconButton(
+              icon: const Icon(Icons.delete_outline),
+              onPressed: () {
+                deleteProduct(data[index].id);
+              },
+            ),
+          ),
+        );
+      },
     );
   }
 }

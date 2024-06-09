@@ -1,7 +1,7 @@
-import 'package:DelightFoods/Order/Order_api_handler.dart';
-import 'package:DelightFoods/Order/OrderModel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:DelightFoods/Order/Order_api_handler.dart';
+import 'package:DelightFoods/Order/OrderModel.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 
 class AddOrder extends StatefulWidget {
@@ -21,22 +21,22 @@ class _AddOrderState extends State<AddOrder> {
 
       final order = Order(
         id: 0,
-        productId: 0,
-        customerId: 0,
-        customerName: null,
-        quantity: int.tryParse(data['quantity'] ?? '0') ?? 0,
-        totalPrice: double.tryParse(data['totalPrice'] ?? '0') ?? 0,
-        advancePayment: double.tryParse(data['advancePayment'] ?? '0') ?? 0,
-        remainingPayment: double.tryParse(data['remainingPayment'] ?? '0') ?? 0,
-        status: data['status'] ?? '',
+        productId: data['productId'],
+        customerId: data['customerId'],
+        customerName: data['customerName'],
+        quantity: data['quantity'],
+        totalPrice: data['totalPrice'],
+        advancePayment: data['advancePayment'],
+        remainingPayment: data['remainingPayment'],
+        status: data['status'],
         reason: null,
         returnDate: null,
-        shippingId: int.tryParse(data['shippingId'] ?? '0') ?? 0,
+        shippingId: data['shippingId'],
         createdOnUTC: DateTime.now(),
         createdStringDate: null,
         productName: null,
-        paymentType: data['paymentType'] ?? '',
-        shippingAddress: data['shippingAddress'] ?? '',
+        paymentType: data['paymentType'],
+        shippingAddress: data['shippingAddress'],
         paymentId: 0,
         cashOnDelivery: data['cashOnDelivery'] ?? false,
         cartDTOs: [],
@@ -79,6 +79,40 @@ class _AddOrderState extends State<AddOrder> {
           key: _formKey,
           child: Column(
             children: [
+              FormBuilderTextField(
+                name: 'productId',
+                decoration: const InputDecoration(labelText: 'Product ID'),
+                keyboardType: TextInputType.number,
+                validator: FormBuilderValidators.compose([
+                  FormBuilderValidators.required(),
+                  FormBuilderValidators.numeric(),
+                ]),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              FormBuilderTextField(
+                name: 'customerId',
+                decoration: const InputDecoration(labelText: 'Customer ID'),
+                keyboardType: TextInputType.number,
+                validator: FormBuilderValidators.compose([
+                  FormBuilderValidators.required(),
+                  FormBuilderValidators.numeric(),
+                ]),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              FormBuilderTextField(
+                name: 'customerName',
+                decoration: const InputDecoration(labelText: 'Customer Name'),
+                validator: FormBuilderValidators.compose([
+                  FormBuilderValidators.required(),
+                ]),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
               FormBuilderTextField(
                 name: 'quantity',
                 decoration: const InputDecoration(labelText: 'Quantity'),
