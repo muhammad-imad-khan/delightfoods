@@ -5,7 +5,7 @@ import 'dart:convert';
 
 class LoginAuthProvider with ChangeNotifier {
   Future<void> login(String username, String password) async {
-    final url = Uri.parse('http://192.168.1.13:8081/api/Authenticate/login');
+    final url = Uri.parse('https://558e-202-47-48-55.ngrok-free.app/api/Authenticate/login');
 
     try {
       final response = await http.post(

@@ -7,7 +7,7 @@ import '../Auth/userModel.dart';
 class RegisterAuthProvider with ChangeNotifier {
   Future<void> register(User user) async {
     final url =
-        Uri.parse('http://192.168.1.13:8081/api/Authenticate/register');
+        Uri.parse('https://558e-202-47-48-55.ngrok-free.app/api/Authenticate/register');
     print(url);
 
     try {

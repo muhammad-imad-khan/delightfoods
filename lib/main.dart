@@ -1,5 +1,6 @@
 import 'package:DelightFoods/Auth/AuthScreens/register.dart';
 import 'package:DelightFoods/Auth/AuthScreens/login.dart';
+import 'package:DelightFoods/Dashboard/customDashboard.dart';
 import 'package:DelightFoods/intro_page.dart';
 import 'package:flutter/material.dart';
 import 'package:DelightFoods/Auth/LoginAuthProvider.dart';
@@ -30,6 +31,7 @@ class MainApp extends StatelessWidget {
           '/intro': (context) => IntroPage(),
           '/register': (context) => Register(),
           '/login': (context) => Login(),
+          '/dashboard': (context) => CustomDashboard(),
           '/main': (context) => MainPage(),
           '/product': (context) => ProductPage(),
           '/order': (context) => OrderPage(),
@@ -63,6 +65,12 @@ class MainPage extends StatelessWidget {
               ),
             ),
             ListTile(
+              title: Text('Custom Dashboard'),
+              onTap: () {
+                Navigator.pushNamed(context, '/dashboard');
+              },
+            ),
+            ListTile(
               title: Text('Product'),
               onTap: () {
                 Navigator.pushNamed(context, '/product');
@@ -74,7 +82,7 @@ class MainPage extends StatelessWidget {
                 Navigator.pushNamed(context, '/order');
               },
             ),
-             ListTile(
+            ListTile(
               title: Text('Logout'),
               onTap: () {
                 Navigator.pushNamed(context, '/login');
@@ -83,9 +91,6 @@ class MainPage extends StatelessWidget {
           ],
         ),
       ),
-      body:  ListTile(
-              title: Text('Dashboard'),
-            ),
     );
   }
 }
