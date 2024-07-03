@@ -13,7 +13,7 @@ class BarChartMonthly extends StatelessWidget {
       BarModel("Apr", 45),
       BarModel("May", 12),
       BarModel("June", 95),
-      BarModel("July", 0),
+      BarModel("July", 5),
     ];
 
     return data
