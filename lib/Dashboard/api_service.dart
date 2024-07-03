@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  static const String apiUrl = 'https://558e-202-47-48-55.ngrok-free.app/api/Product';
+  static const String apiUrl = 'http://192.168.1.4/api/Product';
 
   Future<List<dynamic>> fetchData() async {
     final response = await http.get(Uri.parse(apiUrl));

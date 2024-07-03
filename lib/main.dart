@@ -1,6 +1,8 @@
 import 'package:DelightFoods/Auth/AuthScreens/register.dart';
 import 'package:DelightFoods/Auth/AuthScreens/login.dart';
 import 'package:DelightFoods/Dashboard/customDashboard.dart';
+import 'package:DelightFoods/charts/BarChart/barChartMonthly.dart';
+import 'package:DelightFoods/charts/BarChart/barChartYearly.dart';
 import 'package:DelightFoods/intro_page.dart';
 import 'package:flutter/material.dart';
 import 'package:DelightFoods/Auth/LoginAuthProvider.dart';
@@ -31,10 +33,11 @@ class MainApp extends StatelessWidget {
           '/intro': (context) => IntroPage(),
           '/register': (context) => Register(),
           '/login': (context) => Login(),
-          '/dashboard': (context) => CustomDashboard(),
           '/main': (context) => MainPage(),
           '/product': (context) => ProductPage(),
           '/order': (context) => OrderPage(),
+          '/monthly': (context) => BarChartMonthly(),
+          '/yearly': (context) => BarChartYearly(),
         },
       ),
     );
@@ -65,12 +68,6 @@ class MainPage extends StatelessWidget {
               ),
             ),
             ListTile(
-              title: Text('Custom Dashboard'),
-              onTap: () {
-                Navigator.pushNamed(context, '/dashboard');
-              },
-            ),
-            ListTile(
               title: Text('Product'),
               onTap: () {
                 Navigator.pushNamed(context, '/product');
@@ -83,12 +80,35 @@ class MainPage extends StatelessWidget {
               },
             ),
             ListTile(
+              title: Text('Monthly Report'),
+              onTap: () {
+                Navigator.pushNamed(context, '/monthly');
+              },
+            ),
+            ListTile(
+              title: Text('Yearly Report'),
+              onTap: () {
+                Navigator.pushNamed(context, '/yearly');
+              },
+            ),
+            ListTile(
               title: Text('Logout'),
               onTap: () {
                 Navigator.pushNamed(context, '/login');
               },
             ),
           ],
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            children: <Widget>[
+              Text("Dashboard"),
+              SizedBox(height: 20), // Add some spacing
+              BarChartYearly(),
+            ],
+          ),
         ),
       ),
     );

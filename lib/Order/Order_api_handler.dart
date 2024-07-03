@@ -3,7 +3,7 @@ import 'package:DelightFoods/Order/OrderModel.dart';
 import 'package:http/http.dart' as http;
 
 class ApiHandler {
-  final String baseUri = "https://558e-202-47-48-55.ngrok-free.app/api/SaleOrder";
+  final String baseUri = "http://192.168.1.4/api/SaleOrder";
 
   Future<List<Order>> getOrderData() async {
     List<Order> data = [];
