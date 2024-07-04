@@ -3,7 +3,7 @@ import 'package:DelightFoods/Product/ProductModel.dart';
 import 'package:http/http.dart' as http;
 
 class ApiHandler {
-  final String baseUri = "http://192.168.1.4/api/Product";
+  final String baseUri = "http://192.168.1.12/api/Product";
 
  Future<List<Product>> getProductData() async {
   List<Product> data = [];
